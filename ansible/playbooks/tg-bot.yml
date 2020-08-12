@@ -1,0 +1,8 @@
+- hosts: bot_servers
+  become: yes
+  roles:
+    - hostname
+    - docker
+    - docker-swarm
+    - tg-bot-exec-service
+    - stack

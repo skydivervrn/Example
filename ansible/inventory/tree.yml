@@ -1,0 +1,3 @@
+bot_servers:
+  children:
+    tag_mission_tgbot:

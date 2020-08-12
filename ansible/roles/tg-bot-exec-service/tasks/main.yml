@@ -1,0 +1,11 @@
+- name: get binary
+  get_url:
+    url: "https://github.com/skydivervrn/bot-tg-go-service/releases/download/{{ cmd_service_version }}/{{ cmd_service_name }}"
+    dest: "/bin/{{ cmd_service_name }}"
+    mode: '0755'
+
+- name: generate configuration
+  template:
+    dest: "/lib/systemd/system/{{ cmd_service_name }}.service"
+    src: "{{ cmd_service_name }}.tmpl.service"
+  notify: start service

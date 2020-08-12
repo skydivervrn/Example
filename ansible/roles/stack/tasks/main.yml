@@ -1,0 +1,34 @@
+- name: register deployment date
+  set_fact:
+    deployment_date: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S%N') }}"
+
+- name: generate stack_remote_filename
+  set_fact:
+    stack_remote_filename: "~/{{stack_name}}_{{ deployment_date }}.yml"
+
+- name: include all variables
+  include_vars:
+    file: "vars/{{ item }}"
+  with_items: "{{ docker_stacks[stack_name].var_files | default([]) }}"
+
+- name: generate configuration
+  template:
+    dest: "{{ stack_remote_filename }}"
+    src: stacks/{{ docker_stacks[stack_name].stack_file }}.yml
+    trim_blocks: yes
+
+- name: deploy stack
+  run_once: yes
+  docker_stack:
+    state: present
+    name: "{{ docker_stacks[stack_name].stack_name | default(stack_name) }}"
+    with_registry_auth: yes
+    prune: "{{ docker_prune_services | default(True) }}"
+    compose:
+      - "{{ stack_remote_filename }}"
+  register: deploy_result
+
+- name: deployment result
+  debug:
+    msg: "{{ deploy_result.stack_spec_diff|from_json|to_nice_yaml(indent=8)|split('\n') }}"
+  when: deploy_result is changed

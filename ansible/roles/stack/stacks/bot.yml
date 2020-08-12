@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  app:
+    image: skydivervrn/golang_bot
+    restart: always
+    environment:
+      BOT_TOKEN: "{{ bot_token }}"
+      PRODUCTION_ADMIN_LIST: "skydiver_vrn, tst"
+    volumes:
+      - buffer:/buffer
+
+volumes:
+  buffer:

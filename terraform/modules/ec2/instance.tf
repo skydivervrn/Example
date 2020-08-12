@@ -2,7 +2,7 @@ resource "aws_instance" "instance" {
   count = var.instances_count
 
   availability_zone = var.instance_availability_zones_mapping[count.index % length(var.instance_availability_zones_mapping)] // If instances count will be more then az count it's prevent crash
-  ami = data.aws_ami.aws_ami_debian_buster.id
+  ami = data.aws_ami.aws_ami_ubuntu.id
   instance_type = var.instance_type
   monitoring = true
   ebs_optimized = true
@@ -16,7 +16,9 @@ resource "aws_instance" "instance" {
     volume_type = "gp2"
     volume_size = var.instance_root_device_size
   }
-
+  credit_specification {
+    cpu_credits = "standard"
+  }
   tags = merge(
   var.instance_tags,
   map(
@@ -26,11 +28,10 @@ resource "aws_instance" "instance" {
 
   lifecycle {
     ignore_changes  = [
-      ami,
+//      ami,
       key_name,
-      user_data,
       associate_public_ip_address,
     ]
-    prevent_destroy = true
+//    prevent_destroy = true
   }
 }

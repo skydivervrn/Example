@@ -1,0 +1,22 @@
+
+- name: Init a new swarm with default parameters
+  docker_swarm:
+    state: present
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+  register: swarm_manager
+  run_once: yes
+
+- set_fact:
+    swarm_manager_global: "{{ swarm_manager }}"
+    swarm_manager_global_ip: "{{ ansible_default_ipv4.address }}"
+  delegate_to: "{{ item }}"
+  with_items: "{{ ansible_play_hosts }}"
+  delegate_facts: true
+  run_once: yes
+
+- name: Join
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+    join_token: "{{ swarm_manager_global.swarm_facts.JoinTokens.Manager }}"
+    remote_addrs: [ '{{ swarm_manager_global_ip }}:2377' ]

@@ -1,0 +1,6 @@
+docker_stacks:
+  tg_bot:
+    stack_file: bot
+    swarm_servers: bot_servers
+    var_files:
+      - bot.yml

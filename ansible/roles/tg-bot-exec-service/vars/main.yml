@@ -1,0 +1,5 @@
+app_out_file: /var/lib/docker/volumes/tg_bot_buffer/_data/app.output
+cmd_out_file: /var/lib/docker/volumes/tg_bot_buffer/_data/cmd.output
+
+cmd_service_name: cmdrunner
+cmd_service_version: "0.01.01"
